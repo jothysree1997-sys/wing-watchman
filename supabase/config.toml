@@ -1,1 +1,4 @@
 project_id = "oodajywkoldvuhvecwys"
+
+[functions.dispatch-jobs]
+verify_jwt = false
