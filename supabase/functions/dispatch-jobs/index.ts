@@ -77,7 +77,6 @@ async function logCall(subId: string, jobId: string | null, endpoint: string, pa
     error: r.error,
     duration_ms: r.duration,
   });
-  await supabase.rpc("noop").catch(() => {});
   // bump counters
   const { data: sub } = await supabase.from("subscriptions").select("api_call_count, failed_api_count").eq("id", subId).single();
   if (sub) {
