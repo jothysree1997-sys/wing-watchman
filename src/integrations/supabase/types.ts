@@ -14,7 +14,212 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      api_call_logs: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          endpoint: string
+          error: string | null
+          http_status: number | null
+          id: string
+          job_id: string | null
+          provider: string
+          request_params: Json | null
+          response: Json | null
+          subscription_id: string | null
+          success: boolean
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          endpoint: string
+          error?: string | null
+          http_status?: number | null
+          id?: string
+          job_id?: string | null
+          provider?: string
+          request_params?: Json | null
+          response?: Json | null
+          subscription_id?: string | null
+          success?: boolean
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          endpoint?: string
+          error?: string | null
+          http_status?: number | null
+          id?: string
+          job_id?: string | null
+          provider?: string
+          request_params?: Json | null
+          response?: Json | null
+          subscription_id?: string | null
+          success?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_call_logs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_call_logs_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduled_jobs: {
+        Row: {
+          attempt: number
+          created_at: string
+          error: string | null
+          finished_at: string | null
+          id: string
+          job_type: string
+          max_attempts: number
+          payload: Json | null
+          phase: string | null
+          result: Json | null
+          run_at: string
+          started_at: string | null
+          status: string
+          subscription_id: string
+        }
+        Insert: {
+          attempt?: number
+          created_at?: string
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          job_type: string
+          max_attempts?: number
+          payload?: Json | null
+          phase?: string | null
+          result?: Json | null
+          run_at: string
+          started_at?: string | null
+          status?: string
+          subscription_id: string
+        }
+        Update: {
+          attempt?: number
+          created_at?: string
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          job_type?: string
+          max_attempts?: number
+          payload?: Json | null
+          phase?: string | null
+          result?: Json | null
+          run_at?: string
+          started_at?: string | null
+          status?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_jobs_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          airline_iata: string
+          api_call_count: number
+          arr_actual_utc: string | null
+          arr_city: string | null
+          arr_estimated_utc: string | null
+          arr_iata: string
+          arr_time_utc: string | null
+          created_at: string
+          dep_actual_utc: string | null
+          dep_city: string | null
+          dep_estimated_utc: string | null
+          dep_iata: string
+          dep_local_datetime: string
+          dep_time_utc: string
+          failed_api_count: number
+          flight_iata: string
+          flight_number: string
+          id: string
+          last_response: Json | null
+          last_status_text: string | null
+          next_job_time: string | null
+          phase: string
+          retry_count: number
+          status: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          airline_iata: string
+          api_call_count?: number
+          arr_actual_utc?: string | null
+          arr_city?: string | null
+          arr_estimated_utc?: string | null
+          arr_iata: string
+          arr_time_utc?: string | null
+          created_at?: string
+          dep_actual_utc?: string | null
+          dep_city?: string | null
+          dep_estimated_utc?: string | null
+          dep_iata: string
+          dep_local_datetime: string
+          dep_time_utc: string
+          failed_api_count?: number
+          flight_iata: string
+          flight_number: string
+          id?: string
+          last_response?: Json | null
+          last_status_text?: string | null
+          next_job_time?: string | null
+          phase?: string
+          retry_count?: number
+          status?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          airline_iata?: string
+          api_call_count?: number
+          arr_actual_utc?: string | null
+          arr_city?: string | null
+          arr_estimated_utc?: string | null
+          arr_iata?: string
+          arr_time_utc?: string | null
+          created_at?: string
+          dep_actual_utc?: string | null
+          dep_city?: string | null
+          dep_estimated_utc?: string | null
+          dep_iata?: string
+          dep_local_datetime?: string
+          dep_time_utc?: string
+          failed_api_count?: number
+          flight_iata?: string
+          flight_number?: string
+          id?: string
+          last_response?: Json | null
+          last_status_text?: string | null
+          next_job_time?: string | null
+          phase?: string
+          retry_count?: number
+          status?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
