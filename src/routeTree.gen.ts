@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardSubscriptionsRouteImport } from './routes/dashboard.subscriptions'
 import { Route as DashboardNewRouteImport } from './routes/dashboard.new'
 
 const LoginRoute = LoginRouteImport.update({
@@ -35,6 +36,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSubscriptionsRoute = DashboardSubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardNewRoute = DashboardNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -46,12 +52,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/dashboard/new': typeof DashboardNewRoute
+  '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard/new': typeof DashboardNewRoute
+  '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -60,19 +68,32 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/dashboard/new': typeof DashboardNewRoute
+  '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/dashboard/new' | '/dashboard/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/dashboard/new'
+    | '/dashboard/subscriptions'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/dashboard/new' | '/dashboard'
+  to:
+    | '/'
+    | '/login'
+    | '/dashboard/new'
+    | '/dashboard/subscriptions'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
     | '/dashboard/new'
+    | '/dashboard/subscriptions'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -112,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/subscriptions': {
+      id: '/dashboard/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/dashboard/subscriptions'
+      preLoaderRoute: typeof DashboardSubscriptionsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/new': {
       id: '/dashboard/new'
       path: '/new'
@@ -124,11 +152,13 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardNewRoute: typeof DashboardNewRoute
+  DashboardSubscriptionsRoute: typeof DashboardSubscriptionsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardNewRoute: DashboardNewRoute,
+  DashboardSubscriptionsRoute: DashboardSubscriptionsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
