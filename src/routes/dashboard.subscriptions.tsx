@@ -26,6 +26,7 @@ function Subs() {
   const [open, setOpen] = useState<any | null>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   async function load() {
     const { data } = await supabase.from("subscriptions").select("*").order("created_at", { ascending: false });
