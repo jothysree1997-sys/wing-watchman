@@ -54,16 +54,24 @@ export const Route = createFileRoute("/api/public/subscriptions")({
           return json({ error: "Invalid date/time" }, 400);
         }
 
-        // Duplicate check ±12h
+        // Duplicate check: same flight, same route, same date (±12h window on dep time)
         const { data: dup } = await supabaseAdmin
           .from("subscriptions")
-          .select("id")
+          .select("*")
           .eq("flight_iata", flight_iata)
+          .eq("dep_iata", dep)
+          .eq("arr_iata", arr)
           .gte("dep_time_utc", new Date(new Date(depUtcIso).getTime() - 12 * 3600 * 1000).toISOString())
           .lte("dep_time_utc", new Date(new Date(depUtcIso).getTime() + 12 * 3600 * 1000).toISOString())
+          .order("created_at", { ascending: false })
           .limit(1);
         if (dup && dup.length) {
-          return json({ error: "Already subscribed", subscription_id: dup[0].id }, 409);
+          return json({
+            ok: true,
+            duplicate: true,
+            message: "Subscription already exists for this flight, route and date",
+            subscription: dup[0],
+          }, 200);
         }
 
         const depUtc = new Date(depUtcIso);
