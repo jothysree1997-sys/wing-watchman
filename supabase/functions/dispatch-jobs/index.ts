@@ -14,6 +14,34 @@ const AIRLABS_KEY = Deno.env.get("AIRLABS_API_KEY")!;
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
 const TERMINAL = ["COMPLETED", "CANCELLED", "FAILED"];
+const WEBHOOK_URL = "https://backbin.colaber.in/webhook/flyt";
+
+// Normalize wildly varying status strings into a canonical set
+function normalizeStatus(s: string | null | undefined): string {
+  const x = (s || "").toLowerCase().replace(/[_\s]/g, "-");
+  if (!x) return "unknown";
+  if (x === "enroute" || x === "en-route" || x === "active" || x === "airborne") return "en-route";
+  if (x === "scheduled" || x === "on-time" || x === "ontime") return "scheduled";
+  if (x === "landed" || x === "arrived") return "landed";
+  if (x === "cancelled" || x === "canceled") return "cancelled";
+  if (x === "diverted") return "diverted";
+  if (x === "delayed") return "delayed";
+  if (x === "incident") return "incident";
+  if (x === "redirected") return "diverted";
+  return x;
+}
+
+async function postWebhook(payload: any) {
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.error("webhook fail", e);
+  }
+}
 
 async function airlabs(endpoint: string, params: Record<string, string>) {
   const url = new URL(`https://airlabs.co/api/v9/${endpoint}`);
