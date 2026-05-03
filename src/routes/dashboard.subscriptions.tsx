@@ -64,8 +64,8 @@ function Subs() {
                 <TableHead>Created</TableHead>
                 <TableHead>Flight</TableHead>
                 <TableHead>Route</TableHead>
-                <TableHead>Departure (local)</TableHead>
-                <TableHead>Arrival (est)</TableHead>
+                <TableHead>Departure</TableHead>
+                <TableHead>Arrival</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">API calls</TableHead>
               </TableRow>
@@ -79,8 +79,8 @@ function Subs() {
                   <TableCell className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()}</TableCell>
                   <TableCell className="font-medium flex items-center gap-2"><Plane className="h-3.5 w-3.5 text-primary" />{r.flight_iata}</TableCell>
                   <TableCell className="text-sm">{r.dep_iata} <ArrowRight className="inline h-3 w-3" /> {r.arr_iata}</TableCell>
-                  <TableCell className="text-sm">{formatInTz(r.dep_time_utc, r.timezone)}</TableCell>
-                  <TableCell className="text-sm">{r.arr_time_utc ? formatInTz(r.arr_time_utc, r.timezone) : "—"}</TableCell>
+                  <TableCell className="text-sm">{formatInTz(r.dep_time_utc, getTz(r.dep_iata))} <span className="text-[10px] text-muted-foreground">({getTz(r.dep_iata)})</span></TableCell>
+                  <TableCell className="text-sm">{r.arr_time_utc ? <>{formatInTz(r.arr_time_utc, getTz(r.arr_iata))} <span className="text-[10px] text-muted-foreground">({getTz(r.arr_iata)})</span></> : "—"}</TableCell>
                   <TableCell><Badge variant="outline" className={statusTone[r.status] ?? ""}>{r.status}</Badge></TableCell>
                   <TableCell className="text-right tabular-nums">{r.api_call_count}/10</TableCell>
                 </TableRow>
