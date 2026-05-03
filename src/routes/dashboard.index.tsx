@@ -170,6 +170,60 @@ function Overview() {
           </Card>
         </div>
       </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+          <Database className="h-5 w-5 text-primary" /> Lovable Cloud (Backend) Usage
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Stat icon={Database} label="Subscriptions rows" value={s?.totalSubscriptions ?? "—"} accent="primary" />
+          <Stat icon={Clock} label="Scheduled jobs rows" value={s?.totalJobs ?? "—"} accent="sky" />
+          <Stat icon={Activity} label="API log rows (all-time)" value={s?.totalLogs ?? "—"} accent="success" />
+          <Stat icon={Zap} label="Realtime channels" value={s?.realtimeChannels ?? "—"} accent="primary" />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 mt-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Database className="h-4 w-4 text-primary" /> Database rows used
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Total rows across tables</span>
+                <span className="font-semibold tabular-nums">
+                  {s?.totalRows ?? 0} / {CLOUD_DB_ROWS_LIMIT.toLocaleString()}
+                </span>
+              </div>
+              <Progress value={s ? Math.min(100, (s.totalRows / CLOUD_DB_ROWS_LIMIT) * 100) : 0} />
+              <p className="text-xs text-muted-foreground">
+                Lovable Cloud free-tier soft cap. Live data; tables: subscriptions, scheduled_jobs, api_call_logs.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4 text-primary" /> Cloud limits & constraints
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm space-y-1.5">
+              <Row label="Provider" value="Lovable Cloud (Postgres)" />
+              <Row label="Default query row limit" value="1000" />
+              <Row label="Egress (free tier)" value={`${CLOUD_EGRESS_GB} GB / month`} />
+              <Row label="Realtime channels" value="Up to 200 concurrent" />
+              <Row label="Auth users (free tier)" value="50,000 MAU" />
+              <Row label="Storage (free tier)" value="1 GB" />
+              <Row label="Edge function timeout" value="150 s" />
+            </CardContent>
+          </Card>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          For exact billing & live quotas, open <strong>Lovable Cloud → Overview</strong> from the project sidebar.
+        </p>
+      </div>
     </div>
   );
 }
