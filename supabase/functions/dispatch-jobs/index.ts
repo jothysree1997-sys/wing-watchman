@@ -248,9 +248,12 @@ async function processJob(job: any) {
       await supabase.from("subscriptions").update({ phase: "DEPARTURE_TRACKING", retry_count: 0 }).eq("id", sub.id);
       await scheduleJob(sub.id, "CHECK_DEPARTURE", "DEPARTURE_TRACKING", next < now ? new Date(now.getTime() + 60_000) : next);
     } else if (phase === "DEPARTURE_TRACKING") {
-      if (flight.dep_actual_utc) {
+      if (hasArrived(flight)) {
+        await supabase.from("subscriptions").update({ status: "COMPLETED", phase: "COMPLETED" }).eq("id", sub.id);
+      } else if (hasDeparted(flight)) {
         await supabase.from("subscriptions").update({ phase: "ARRIVAL_TRACKING", retry_count: 0 }).eq("id", sub.id);
-        const next = new Date(arrEst.getTime() + 5 * 60 * 1000);
+        const eta = arrivalEta(flight, arrEst);
+        const next = new Date(eta.getTime() + 5 * 60 * 1000);
         await scheduleJob(sub.id, "CHECK_ARRIVAL", "ARRIVAL_TRACKING", next < now ? new Date(now.getTime() + 60_000) : next);
       } else {
         const rc = sub.retry_count + 1;
@@ -262,16 +265,22 @@ async function processJob(job: any) {
         }
       }
     } else if (phase === "ARRIVAL_TRACKING") {
-      if (flight.arr_actual_utc || fStatus === "landed") {
+      if (hasArrived(flight)) {
         await supabase.from("subscriptions").update({ status: "COMPLETED", phase: "COMPLETED" }).eq("id", sub.id);
       } else {
+        // Still en-route — re-poll near updated ETA
+        const eta = arrivalEta(flight, arrEst);
+        const minutesToEta = Math.round((eta.getTime() - now.getTime()) / 60000);
         const rc = sub.retry_count + 1;
-        if (rc >= 3) {
+        if (rc >= 5) {
           await supabase.from("subscriptions").update({ status: "FAILED", phase: "ARRIVAL_NOT_DETECTED" }).eq("id", sub.id);
         } else {
-          const wait = rc === 1 ? 10 : 30;
+          // If ETA is far away, sleep until ~5 min before; otherwise poll every 10 min
+          let waitMin: number;
+          if (minutesToEta > 30) waitMin = Math.min(minutesToEta - 5, 60);
+          else waitMin = 10;
           await supabase.from("subscriptions").update({ retry_count: rc }).eq("id", sub.id);
-          await scheduleJob(sub.id, "CHECK_ARRIVAL", "ARRIVAL_TRACKING", new Date(now.getTime() + wait * 60 * 1000));
+          await scheduleJob(sub.id, "CHECK_ARRIVAL", "ARRIVAL_TRACKING", new Date(now.getTime() + waitMin * 60 * 1000));
         }
       }
     }
