@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatInTz } from "@/lib/airports";
-import { Plane, ArrowRight } from "lucide-react";
+import { Plane, ArrowRight, ChevronRight } from "lucide-react";
+import { Fragment } from "react";
 
 export const Route = createFileRoute("/dashboard/subscriptions")({
   component: Subs,
