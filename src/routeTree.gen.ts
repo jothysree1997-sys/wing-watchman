@@ -17,6 +17,7 @@ import { Route as DashboardSubscriptionsRouteImport } from './routes/dashboard.s
 import { Route as DashboardProvidersRouteImport } from './routes/dashboard.providers'
 import { Route as DashboardNewRouteImport } from './routes/dashboard.new'
 import { Route as ApiPublicSubscriptionsRouteImport } from './routes/api/public/subscriptions'
+import { Route as ApiPublicHooksCleanupSubscriptionsRouteImport } from './routes/api/public/hooks/cleanup-subscriptions'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -58,6 +59,12 @@ const ApiPublicSubscriptionsRoute = ApiPublicSubscriptionsRouteImport.update({
   path: '/api/public/subscriptions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksCleanupSubscriptionsRoute =
+  ApiPublicHooksCleanupSubscriptionsRouteImport.update({
+    id: '/api/public/hooks/cleanup-subscriptions',
+    path: '/api/public/hooks/cleanup-subscriptions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/public/subscriptions': typeof ApiPublicSubscriptionsRoute
+  '/api/public/hooks/cleanup-subscriptions': typeof ApiPublicHooksCleanupSubscriptionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,6 +85,7 @@ export interface FileRoutesByTo {
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/api/public/subscriptions': typeof ApiPublicSubscriptionsRoute
+  '/api/public/hooks/cleanup-subscriptions': typeof ApiPublicHooksCleanupSubscriptionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,6 +97,7 @@ export interface FileRoutesById {
   '/dashboard/subscriptions': typeof DashboardSubscriptionsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/public/subscriptions': typeof ApiPublicSubscriptionsRoute
+  '/api/public/hooks/cleanup-subscriptions': typeof ApiPublicHooksCleanupSubscriptionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/dashboard/subscriptions'
     | '/dashboard/'
     | '/api/public/subscriptions'
+    | '/api/public/hooks/cleanup-subscriptions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/dashboard/subscriptions'
     | '/dashboard'
     | '/api/public/subscriptions'
+    | '/api/public/hooks/cleanup-subscriptions'
   id:
     | '__root__'
     | '/'
@@ -119,6 +131,7 @@ export interface FileRouteTypes {
     | '/dashboard/subscriptions'
     | '/dashboard/'
     | '/api/public/subscriptions'
+    | '/api/public/hooks/cleanup-subscriptions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -126,6 +139,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
   ApiPublicSubscriptionsRoute: typeof ApiPublicSubscriptionsRoute
+  ApiPublicHooksCleanupSubscriptionsRoute: typeof ApiPublicHooksCleanupSubscriptionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -186,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSubscriptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/cleanup-subscriptions': {
+      id: '/api/public/hooks/cleanup-subscriptions'
+      path: '/api/public/hooks/cleanup-subscriptions'
+      fullPath: '/api/public/hooks/cleanup-subscriptions'
+      preLoaderRoute: typeof ApiPublicHooksCleanupSubscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -212,6 +233,8 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   ApiPublicSubscriptionsRoute: ApiPublicSubscriptionsRoute,
+  ApiPublicHooksCleanupSubscriptionsRoute:
+    ApiPublicHooksCleanupSubscriptionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
