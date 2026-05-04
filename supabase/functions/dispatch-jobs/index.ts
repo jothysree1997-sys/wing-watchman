@@ -330,8 +330,10 @@ async function processJob(job: any) {
         if (rc >= 5) {
           await supabase.from("subscriptions").update({ status: "FAILED", phase: "ARRIVAL_NOT_DETECTED" }).eq("id", sub.id);
         } else {
-          // Within the 10-min pre-arrival window — poll every 2 min until landed
-          const waitMin = minutesToEta > 10 ? Math.min(minutesToEta - 10, 60) : 2;
+          // Within the 10-min pre-arrival window — poll every 2 min until landed.
+          // From the 3rd arrival-tracking call onwards, enforce a minimum 30-min gap.
+          let waitMin = minutesToEta > 10 ? Math.min(minutesToEta - 10, 60) : 2;
+          if (rc >= 3) waitMin = Math.max(waitMin, 30);
           await supabase.from("subscriptions").update({ retry_count: rc }).eq("id", sub.id);
           await scheduleJob(sub.id, "CHECK_ARRIVAL", "ARRIVAL_TRACKING", new Date(now.getTime() + waitMin * 60 * 1000));
         }
