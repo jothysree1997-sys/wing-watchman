@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, Link, useNavigate, useLocation, redirect } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Plane, LayoutDashboard, PlusCircle, ListChecks, Cloud, LogOut } from "lucide-react";
-import { logout } from "@/lib/auth";
+import { isLoggedIn, logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/dashboard")({
