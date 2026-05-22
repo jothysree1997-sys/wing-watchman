@@ -5,20 +5,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plane } from "lucide-react";
 import { login } from "@/lib/auth";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+const FIXED_USER = "info@grandcafeadvertising.com";
+const FIXED_PASS = "Admin@2670";
+
 function LoginPage() {
   const nav = useNavigate();
-  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
   const [pwd, setPwd] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login();
-    nav({ to: "/dashboard" });
+    setLoading(true);
+    if (username.trim().toLowerCase() === FIXED_USER && pwd === FIXED_PASS) {
+      login();
+      toast.success("Welcome back");
+      nav({ to: "/dashboard" });
+    } else {
+      toast.error("Invalid username or password");
+    }
+    setLoading(false);
   };
 
   return (
@@ -46,18 +58,35 @@ function LoginPage() {
           </div>
           <div>
             <h2 className="font-display text-3xl font-bold">Sign in</h2>
-            <p className="text-sm text-muted-foreground mt-1">Enter your phone and password to continue.</p>
+            <p className="text-sm text-muted-foreground mt-1">Enter your credentials to continue.</p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone number</Label>
-            <Input id="phone" placeholder="+91 9XXXXXXXXX" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              type="email"
+              autoComplete="username"
+              placeholder="you@example.com"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="pwd">Password</Label>
-            <Input id="pwd" type="password" placeholder="••••••••" value={pwd} onChange={(e) => setPwd(e.target.value)} />
+            <Input
+              id="pwd"
+              type="password"
+              autoComplete="current-password"
+              placeholder="••••••••"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              required
+            />
           </div>
-          <Button type="submit" className="w-full">Sign in</Button>
-          <p className="text-xs text-muted-foreground text-center">Demo login — any value works.</p>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
         </form>
       </div>
     </div>
