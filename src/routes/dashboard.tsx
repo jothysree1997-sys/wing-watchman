@@ -23,6 +23,15 @@ const tabs = [
 function DashboardLayout() {
   const nav = useNavigate();
   const loc = useLocation();
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      nav({ to: "/login", replace: true });
+    } else {
+      setReady(true);
+    }
+  }, [nav]);
+  if (!ready) return null;
   return (
     <div className="min-h-screen">
       <header className="border-b bg-card/60 backdrop-blur sticky top-0 z-10">
